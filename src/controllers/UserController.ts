@@ -15,6 +15,9 @@ export class UserControler {
       if (!user.name) {
         return res.status(400).json({message: 'Bad request:Name obrigatório!'})
       }
+      if (!user.email) {
+        return res.status(400).json({message: 'Bad request:Email obrigatório!'})
+      }
       this.userService.createUser(user);
       return res.status(201).json({message: 'Usuário criado'})
   }
@@ -22,6 +25,17 @@ export class UserControler {
   getAllUsers = (req: Request, res: Response) => {
     const users = this.userService.getAllUsers();
     return res.status(201).json(users)
-
   }
+
+  deleteUser = (req: Request, res: Response) => {
+    const user = req.body;
+
+    if (!user.name) {
+      return res.status(400).json({message: 'Bad request:Name obrigatório!'})
+    }
+    console.log('excluindo, user: ' + user.name)
+    this.userService.deleteUser(user);
+    return res.status(200).json({message: 'Usuário excluído'})
+}
+
 }
