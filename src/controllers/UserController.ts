@@ -18,13 +18,15 @@ export class UserControler {
       if (!user.email) {
         return res.status(400).json({message: 'Bad request:Email obrigatório!'})
       }
-      this.userService.createUser(user);
+      if (!user.password) {
+        return res.status(400).json({message: 'Bad request:Password obrigatório!'})
+      }
+      this.userService.createUser(user.name, user.email, user.password);
       return res.status(201).json({message: 'Usuário criado'})
   }
 
-  getAllUsers = (req: Request, res: Response) => {
-    const users = this.userService.getAllUsers();
-    return res.status(201).json(users)
+  getUser = (request: Request, response: Response) => {
+    return response.status(200)
   }
 
   deleteUser = (req: Request, res: Response) => {
