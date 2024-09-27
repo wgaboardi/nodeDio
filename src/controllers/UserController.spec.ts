@@ -2,24 +2,24 @@ import { Request } from 'express'
 import { UserService } from '../services/UserService'
 import { UserControler } from './UserController'
 import { makeMockResponse } from '../__mocks__/mockResponse.mock'
+import { makeMockRequest } from '../__mocks__/mockRequest.mock'
 
-const mockuserService = {
+const mockUserService: Partial<UserService> = {
   createUser: jest.fn(),
-  deleteUser: jest.fn()
-}
+  deleteUser: jest.fn(),
+  getUser: jest.fn()
+  } 
+
 jest.mock('../services/UserService', () => {
   return {
     UserService: jest.fn().mockImplementation(() => {
-      return mockuserService
+      return mockUserService
     })
   }
 })
 
 describe('UserController', () => {
   
-  const mockUserService: Partial<UserService> = {
-    createUser: jest.fn(),
-  } 
   
   const userController = new UserControler()
   const mockResponse = makeMockResponse()
@@ -76,5 +76,16 @@ describe('UserController', () => {
     expect(mockResponse.state.status).toBe(400)
     expect(mockResponse.state.json).toMatchObject({ message: 'Bad request:Password obrigatório!'})
   })  
+
+  it('Deve retornar  o usuario com o userId informado', ()=> {
+    const mockRequest = makeMockRequest({
+        params: {
+          userId: '123456'
+        }  
+    })
+    userController.getUser(mockRequest, mockResponse)
+    expect(mockUserService.getUser).toHaveBeenCalledWith('123456');
+    expect(mockResponse.state.status).toBe(201)
+  })
 
 })
